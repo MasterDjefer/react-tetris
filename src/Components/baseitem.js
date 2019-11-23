@@ -18,8 +18,24 @@ class BaseItem {
         return obj[coorType + valueType];
     }
 
+    isOn(item) {
+        for (let i = 0; i < this._blocks.length; ++i) {
+            for (let j = 0; j < item._blocks.length; ++j) {
+                if (this._blocks[i].x === item._blocks[j].x && this._blocks[i].y + this._blockSize === item._blocks[j].y) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     get blockSize() {
         return this._blockSize; 
+    }
+
+    get blocksCount() {
+        return this._blocks.length;
     }
 
     get height() {
@@ -40,6 +56,14 @@ class BaseItem {
 
     moveDown() {
         this._blocks.forEach(block => block.y += this._blockSize);
+    }
+
+    moveLeft() {
+        this._blocks.forEach(block => block.x -= this._blockSize);
+    }
+
+    moveRight() {
+        this._blocks.forEach(block => block.x += this._blockSize);
     }
 }
 

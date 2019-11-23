@@ -13,23 +13,24 @@ class App extends React.Component {
 
     this.canvas = {
       width: 500,
-      height: 500
+      height: 900
     };
 
     this.state = {
-      elements: []
+      elements: [],
+      currentActiveItem: null
     };
   }
 
-  checkStopping(item) {
-    const elements = this.state.elements.filter((element) => element !== item);
+  checkStopping() {
+    const { currentActiveItem } = this.state;
 
-    // for (const element of elements) {
-    //   if (rect.y + rect.height === element.y && rect.x === element.x) {
-    //     return true;
-    //   }
-    // }
-    if (item.y + item.height >= this.canvas.height) {
+    for (const element of this.state.elements) {
+      if (currentActiveItem.isOn(element)) {
+        return true;
+      }
+    }
+    if (currentActiveItem.y + currentActiveItem.height >= this.canvas.height) {
       return true;
     }
 
@@ -38,25 +39,41 @@ class App extends React.Component {
 
   handleKeyPressed(event) {
     const { ctx, width, height } = this.canvas;
-    switch (event.key) {
-      case " ":
-        const item = new LItem(width);
-        const { elements } = this.state;
-        elements.push(item);
-        this.setState({ elements });
+    const { key } = event;
+    const { currentActiveItem } = this.state;
 
-        const intervalId = setInterval(() => {
-          ctx.clearRect(0, 0, width, height);
+    if (key === " ") {
+      const currentActiveItem = new LItem(width);
+      
+      this.setState({ currentActiveItem });
 
+      const intervalId = setInterval(() => {
+        ctx.clearRect(0, 0, width, height);
+
+        let { currentActiveItem } = this.state;
+        currentActiveItem.moveDown();
+        if (this.checkStopping()) {
           const { elements } = this.state;
-          const foundItem = elements.find(element => element === item);
-          foundItem.moveDown();
-          if (this.checkStopping(foundItem)) {
-            clearInterval(intervalId);
-          }
+          elements.push(currentActiveItem);
+          currentActiveItem = null;
           this.setState({ elements });
-        }, 500);
-        break;
+
+          clearInterval(intervalId);
+        }
+        this.setState({ currentActiveItem });
+      }, 100);
+    } else
+    if (key === "ArrowLeft") {
+      if (currentActiveItem) {
+        currentActiveItem.moveLeft();
+        this.setState({ currentActiveItem });
+      }
+    } else
+    if (key === "ArrowRight") {      
+      if (currentActiveItem) {
+        currentActiveItem.moveRight();
+        this.setState({ currentActiveItem });
+      }
     }
   }
 
@@ -73,7 +90,7 @@ class App extends React.Component {
       this.state.elements.forEach((element) => {
         const blockSize = element.blockSize;
         const borderWidth = 1;
-        for (let i = 0; i < 4; ++i) {
+        for (let i = 0; i < element.blocksCount; ++i) {
           const rect = element.block(i);
           this.canvas.ctx.fillStyle = "black";
           this.canvas.ctx.fillRect(rect.x, rect.y, blockSize, blockSize);
@@ -81,6 +98,19 @@ class App extends React.Component {
           this.canvas.ctx.fillRect(rect.x + borderWidth, rect.y + borderWidth, blockSize - borderWidth * 2, blockSize - borderWidth * 2);
         }        
       });
+
+      const { currentActiveItem } = this.state;
+      if (currentActiveItem) {
+        const blockSize = currentActiveItem.blockSize;
+        const borderWidth = 1;
+        for (let i = 0; i < currentActiveItem.blocksCount; ++i) {
+          const rect = currentActiveItem.block(i);
+          this.canvas.ctx.fillStyle = "black";
+          this.canvas.ctx.fillRect(rect.x, rect.y, blockSize, blockSize);
+          this.canvas.ctx.fillStyle = "green";
+          this.canvas.ctx.fillRect(rect.x + borderWidth, rect.y + borderWidth, blockSize - borderWidth * 2, blockSize - borderWidth * 2);
+        }        
+      }
   }
 
   render() {    
