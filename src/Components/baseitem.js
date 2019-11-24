@@ -58,13 +58,19 @@ class BaseItem {
         return this._blocks[index];
     }
 
-    moveDown(canvasHeight) {
-        if (this.y + this.height < canvasHeight) {
-            this._blocks.forEach(block => block.y += this._blockSize);
-            return true;
+    moveDown(canvasHeight, elements) {
+        if (this.y + this.height + this._blockSize > canvasHeight) {            
+            return false;
         }
 
-        return false;
+        for (const element of elements) {
+            if (this.isOn(element)) {
+                return false;
+            }
+        }
+
+        this._blocks.forEach(block => block.y += this._blockSize);
+        return true;
     }
 
     moveLeft(canvasStartWidth) {

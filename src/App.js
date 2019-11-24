@@ -2,14 +2,20 @@ import React from 'react';
 import './App.css';
 import OItem from './Components/oitem';
 import LItem from './Components/litem';
-
+import JItem from './Components/jitem';
+import IItem from './Components/iitem';
+import TItem from './Components/titem';
+import SItem from './Components/sitem';
+import ZItem from './Components/zitem';
+let i = 0;
 class App extends React.Component {
   constructor(props) {
     super(props);
 
     this.handleKeyPressed = this.handleKeyPressed.bind(this);
     this.drawElements = this.drawElements.bind(this);
-    this.checkStopping = this.checkStopping.bind(this);
+
+    this.items = [OItem, LItem, JItem, IItem, TItem, SItem, ZItem];
 
     this.canvas = {
       width: 500,
@@ -22,54 +28,90 @@ class App extends React.Component {
     };
   }
 
-  checkStopping() {
-    const { currentActiveItem } = this.state;
+  getRandomItem() {
+    return new this.items[Math.floor(Math.random() * 1000) % this.items.length](this.canvas.width);
+  }
 
-    for (const element of this.state.elements) {
-      if (currentActiveItem.isOn(element)) {
-        return true;
+  moveDownItem() {
+    const { currentActiveItem, elements } = this.state;
+    if (currentActiveItem) {
+      if (!currentActiveItem.moveDown(this.canvas.height, elements)) {
+        elements.push(currentActiveItem);
+        this.setState({ elements, currentActiveItem: null });
+        return false;
       }
-    }
 
-    return false;
+      this.setState({ currentActiveItem });
+      return true;
+    }
+  }
+
+  moveLeftItem() {
+    const { currentActiveItem } = this.state;
+    if (currentActiveItem) {
+      currentActiveItem.moveLeft(0);
+      this.setState({ currentActiveItem });
+    }
+  }
+
+  moveRightItem() {
+    const { currentActiveItem } = this.state;
+    if (currentActiveItem) {
+      currentActiveItem.moveRight(this.canvas.width);
+      this.setState({ currentActiveItem });
+    }
   }
 
   handleKeyPressed(event) {
-    const { ctx, width, height } = this.canvas;
     const { key } = event;
-    const { currentActiveItem } = this.state;
 
     if (key === " ") {
-      const currentActiveItem = new LItem(width);
-      
+      const currentActiveItem = this.getRandomItem();      
       this.setState({ currentActiveItem });
 
-      const intervalId = setInterval(() => {
-        ctx.clearRect(0, 0, width, height);
-
-        let { currentActiveItem } = this.state;        
-        if (!currentActiveItem.moveDown(height) || this.checkStopping()) {
-          const { elements } = this.state;
-          elements.push(currentActiveItem);
-          currentActiveItem = null;
-          this.setState({ elements });
-
-          clearInterval(intervalId);
+      const timerId = setInterval(() => {
+        if (!this.moveDownItem()) {
+          clearInterval(timerId);
         }
-        this.setState({ currentActiveItem });
-      }, 100);
+      }, 800);
     } else
     if (key === "ArrowLeft") {
-      if (currentActiveItem) {
-        currentActiveItem.moveLeft(0);
-        this.setState({ currentActiveItem });
-      }
+      this.moveLeftItem();
     } else
     if (key === "ArrowRight") {      
-      if (currentActiveItem) {
-        currentActiveItem.moveRight(width);
-        this.setState({ currentActiveItem });
-      }
+      this.moveRightItem();
+    } else
+    if (key === "ArrowDown") {      
+      this.moveDownItem();
+    }
+  }
+
+  drawElements() {   
+    this.canvas.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+    this.state.elements.forEach((element) => {
+      const blockSize = element.blockSize;
+      const borderWidth = 1;
+      for (let i = 0; i < element.blocksCount; ++i) {
+        const rect = element.block(i);
+        this.canvas.ctx.fillStyle = "black";
+        this.canvas.ctx.fillRect(rect.x, rect.y, blockSize, blockSize);
+        this.canvas.ctx.fillStyle = "green";
+        this.canvas.ctx.fillRect(rect.x + borderWidth, rect.y + borderWidth, blockSize - borderWidth * 2, blockSize - borderWidth * 2);
+      }        
+    });
+
+    const { currentActiveItem } = this.state;
+    if (currentActiveItem) {
+      const blockSize = currentActiveItem.blockSize;
+      const borderWidth = 1;
+      for (let i = 0; i < currentActiveItem.blocksCount; ++i) {
+        const rect = currentActiveItem.block(i);
+        this.canvas.ctx.fillStyle = "black";
+        this.canvas.ctx.fillRect(rect.x, rect.y, blockSize, blockSize);
+        this.canvas.ctx.fillStyle = "green";
+        this.canvas.ctx.fillRect(rect.x + borderWidth, rect.y + borderWidth, blockSize - borderWidth * 2, blockSize - borderWidth * 2);
+      }        
     }
   }
 
@@ -80,33 +122,6 @@ class App extends React.Component {
 
   componentDidUpdate() {
     this.drawElements();
-  }
-
-  drawElements() {   
-      this.state.elements.forEach((element) => {
-        const blockSize = element.blockSize;
-        const borderWidth = 1;
-        for (let i = 0; i < element.blocksCount; ++i) {
-          const rect = element.block(i);
-          this.canvas.ctx.fillStyle = "black";
-          this.canvas.ctx.fillRect(rect.x, rect.y, blockSize, blockSize);
-          this.canvas.ctx.fillStyle = "green";
-          this.canvas.ctx.fillRect(rect.x + borderWidth, rect.y + borderWidth, blockSize - borderWidth * 2, blockSize - borderWidth * 2);
-        }        
-      });
-
-      const { currentActiveItem } = this.state;
-      if (currentActiveItem) {
-        const blockSize = currentActiveItem.blockSize;
-        const borderWidth = 1;
-        for (let i = 0; i < currentActiveItem.blocksCount; ++i) {
-          const rect = currentActiveItem.block(i);
-          this.canvas.ctx.fillStyle = "black";
-          this.canvas.ctx.fillRect(rect.x, rect.y, blockSize, blockSize);
-          this.canvas.ctx.fillStyle = "green";
-          this.canvas.ctx.fillRect(rect.x + borderWidth, rect.y + borderWidth, blockSize - borderWidth * 2, blockSize - borderWidth * 2);
-        }        
-      }
   }
 
   render() {    
