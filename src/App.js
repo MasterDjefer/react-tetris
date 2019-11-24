@@ -29,7 +29,8 @@ class App extends React.Component {
   }
 
   getRandomItem() {
-    return new this.items[Math.floor(Math.random() * 1000) % this.items.length](this.canvas.width);
+    // this.items[Math.floor(Math.random() * 1000) % this.items.length]
+    return new JItem(this.canvas.width);
   }
 
   moveDownItem() {
@@ -83,6 +84,11 @@ class App extends React.Component {
     } else
     if (key === "ArrowDown") {      
       this.moveDownItem();
+    } else
+    if (key === "ArrowUp") {    
+      const { currentActiveItem } = this.state;  
+      currentActiveItem.rotate();
+      this.setState({ currentActiveItem });
     }
   }
 

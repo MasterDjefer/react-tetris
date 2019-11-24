@@ -3,8 +3,12 @@ import BaseItem from "./baseitem";
 class LItem extends BaseItem {
     constructor(canvasWidth) {
         super(canvasWidth);
-        const { _startPos, _blockSize } = this;
-        this._blocks = [{ x: _startPos, y: 0 }, { x: _startPos + _blockSize, y: 0 }, { x: _startPos + _blockSize * 2, y: 0 }, { x: _startPos + _blockSize * 3, y: 0 }];
+        this._matrix = [[1,1,1,1],
+                        [0,0,0,0],
+                        [0,0,0,0],
+                        [0,0,0,0]];
+        this._pivot = { x: 1, y: 1 };
+        this._generateBlocks();
     }
 }
 
