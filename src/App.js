@@ -47,17 +47,17 @@ class App extends React.Component {
   }
 
   moveLeftItem() {
-    const { currentActiveItem } = this.state;
+    const { currentActiveItem, elements } = this.state;
     if (currentActiveItem) {
-      currentActiveItem.moveLeft(0);
+      currentActiveItem.moveLeft(0, elements);
       this.setState({ currentActiveItem });
     }
   }
 
   moveRightItem() {
-    const { currentActiveItem } = this.state;
+    const { currentActiveItem, elements } = this.state;
     if (currentActiveItem) {
-      currentActiveItem.moveRight(this.canvas.width);
+      currentActiveItem.moveRight(this.canvas.width, elements);
       this.setState({ currentActiveItem });
     }
   }

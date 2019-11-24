@@ -30,6 +30,30 @@ class BaseItem {
         return false;
     }
 
+    isLeft(item) {
+        for (let i = 0; i < this._blocks.length; ++i) {
+            for (let j = 0; j < item._blocks.length; ++j) {
+                if (this._blocks[i].x - this._blockSize === item._blocks[j].x && this._blocks[i].y === item._blocks[j].y) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    isRight(item) {
+        for (let i = 0; i < this._blocks.length; ++i) {
+            for (let j = 0; j < item._blocks.length; ++j) {
+                if (this._blocks[i].x + this._blockSize === item._blocks[j].x && this._blocks[i].y === item._blocks[j].y) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     get blockSize() {
         return this._blockSize; 
     }
@@ -73,13 +97,25 @@ class BaseItem {
         return true;
     }
 
-    moveLeft(canvasStartWidth) {
+    moveLeft(canvasStartWidth, elements) {
+        for (const element of elements) {
+            if (this.isLeft(element)) {
+                return;
+            }
+        }
+
         if (this.x - this._blockSize >= canvasStartWidth) {
             this._blocks.forEach(block => block.x -= this._blockSize);  
         }
     }
 
-    moveRight(canvasWidth) {
+    moveRight(canvasWidth, elements) {
+        for (const element of elements) {
+            if (this.isRight(element)) {
+                return;
+            }
+        }
+
         if (this.x + this.width + this._blockSize <= canvasWidth) {
             this._blocks.forEach(block => block.x += this._blockSize);
         }
