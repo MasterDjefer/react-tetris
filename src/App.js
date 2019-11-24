@@ -30,9 +30,6 @@ class App extends React.Component {
         return true;
       }
     }
-    if (currentActiveItem.y + currentActiveItem.height >= this.canvas.height) {
-      return true;
-    }
 
     return false;
   }
@@ -50,9 +47,8 @@ class App extends React.Component {
       const intervalId = setInterval(() => {
         ctx.clearRect(0, 0, width, height);
 
-        let { currentActiveItem } = this.state;
-        currentActiveItem.moveDown();
-        if (this.checkStopping()) {
+        let { currentActiveItem } = this.state;        
+        if (!currentActiveItem.moveDown(height) || this.checkStopping()) {
           const { elements } = this.state;
           elements.push(currentActiveItem);
           currentActiveItem = null;
@@ -65,13 +61,13 @@ class App extends React.Component {
     } else
     if (key === "ArrowLeft") {
       if (currentActiveItem) {
-        currentActiveItem.moveLeft();
+        currentActiveItem.moveLeft(0);
         this.setState({ currentActiveItem });
       }
     } else
     if (key === "ArrowRight") {      
       if (currentActiveItem) {
-        currentActiveItem.moveRight();
+        currentActiveItem.moveRight(width);
         this.setState({ currentActiveItem });
       }
     }

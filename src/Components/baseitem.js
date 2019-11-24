@@ -39,7 +39,11 @@ class BaseItem {
     }
 
     get height() {
-        return this._getBlockPos("y", "max") - this._getBlockPos("y", "min") +  this._blockSize;
+        return this._getBlockPos("y", "max") - this._getBlockPos("y", "min") + this._blockSize;
+    }
+
+    get width() {
+        return this._getBlockPos("x", "max") - this._getBlockPos("x", "min") + this._blockSize;
     }
 
     get x() {
@@ -54,16 +58,25 @@ class BaseItem {
         return this._blocks[index];
     }
 
-    moveDown() {
-        this._blocks.forEach(block => block.y += this._blockSize);
+    moveDown(canvasHeight) {
+        if (this.y + this.height < canvasHeight) {
+            this._blocks.forEach(block => block.y += this._blockSize);
+            return true;
+        }
+
+        return false;
     }
 
-    moveLeft() {
-        this._blocks.forEach(block => block.x -= this._blockSize);
+    moveLeft(canvasStartWidth) {
+        if (this.x - this._blockSize >= canvasStartWidth) {
+            this._blocks.forEach(block => block.x -= this._blockSize);  
+        }
     }
 
-    moveRight() {
-        this._blocks.forEach(block => block.x += this._blockSize);
+    moveRight(canvasWidth) {
+        if (this.x + this.width + this._blockSize <= canvasWidth) {
+            this._blocks.forEach(block => block.x += this._blockSize);
+        }
     }
 }
 
