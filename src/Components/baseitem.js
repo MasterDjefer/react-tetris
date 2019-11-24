@@ -4,8 +4,8 @@ class BaseItem {
         this._x = Math.floor(canvasWidth / 2 / this._blockSize) * this._blockSize;
         this._y = 0;
         this._matrix = [];
-        this._blocks = [];      
-        this._pivot = {};   
+        this._pivot = { x: 1, y: 1 };
+        this._blocks = [];     
     }
 
     _generateBlocks() {

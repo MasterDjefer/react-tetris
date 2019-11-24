@@ -7,7 +7,8 @@ import IItem from './Components/iitem';
 import TItem from './Components/titem';
 import SItem from './Components/sitem';
 import ZItem from './Components/zitem';
-let i = 0;
+
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -15,7 +16,7 @@ class App extends React.Component {
     this.handleKeyPressed = this.handleKeyPressed.bind(this);
     this.drawElements = this.drawElements.bind(this);
 
-    this.items = [OItem, LItem, JItem, IItem, TItem, SItem, ZItem];
+    this.items = [OItem, LItem, JItem, TItem, SItem, ZItem];
 
     this.canvas = {
       width: 500,
@@ -30,7 +31,7 @@ class App extends React.Component {
 
   getRandomItem() {
     // this.items[Math.floor(Math.random() * 1000) % this.items.length]
-    return new JItem(this.canvas.width);
+    return new IItem(this.canvas.width);
   }
 
   moveDownItem() {
@@ -87,8 +88,10 @@ class App extends React.Component {
     } else
     if (key === "ArrowUp") {    
       const { currentActiveItem } = this.state;  
-      currentActiveItem.rotate();
-      this.setState({ currentActiveItem });
+      if (currentActiveItem) {
+        currentActiveItem.rotate();
+        this.setState({ currentActiveItem });
+      }
     }
   }
 

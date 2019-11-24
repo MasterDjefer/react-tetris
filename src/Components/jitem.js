@@ -7,7 +7,6 @@ class JItem extends BaseItem {
                         [0,0,1,0],
                         [0,0,0,0],
                         [0,0,0,0]];
-        this._pivot = { x: 1, y: 1 };
         this._generateBlocks();
     }
 }
