@@ -20,7 +20,7 @@ class App extends React.Component {
 
     this.canvas = {
       width: 500,
-      height: 900
+      height: 700
     };
 
     this.state = {
@@ -68,7 +68,7 @@ class App extends React.Component {
     const { key } = event;
 
     if (key === " ") {
-      const currentActiveItem = this.getRandomItem();      
+      const currentActiveItem = this.getRandomItem();
       this.setState({ currentActiveItem });
 
       const timerId = setInterval(() => {
@@ -80,14 +80,14 @@ class App extends React.Component {
     if (key === "ArrowLeft") {
       this.moveLeftItem();
     } else
-    if (key === "ArrowRight") {      
+    if (key === "ArrowRight") {
       this.moveRightItem();
     } else
-    if (key === "ArrowDown") {      
+    if (key === "ArrowDown") {
       this.moveDownItem();
     } else
-    if (key === "ArrowUp") {    
-      const { currentActiveItem } = this.state;  
+    if (key === "ArrowUp") {
+      const { currentActiveItem } = this.state;
       if (currentActiveItem) {
         currentActiveItem.rotate();
         this.setState({ currentActiveItem });
@@ -95,7 +95,7 @@ class App extends React.Component {
     }
   }
 
-  drawElements() {   
+  drawElements() {
     this.canvas.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     this.state.elements.forEach((element) => {
@@ -107,7 +107,7 @@ class App extends React.Component {
         this.canvas.ctx.fillRect(rect.x, rect.y, blockSize, blockSize);
         this.canvas.ctx.fillStyle = "green";
         this.canvas.ctx.fillRect(rect.x + borderWidth, rect.y + borderWidth, blockSize - borderWidth * 2, blockSize - borderWidth * 2);
-      }        
+      }
     });
 
     const { currentActiveItem } = this.state;
@@ -120,7 +120,7 @@ class App extends React.Component {
         this.canvas.ctx.fillRect(rect.x, rect.y, blockSize, blockSize);
         this.canvas.ctx.fillStyle = "green";
         this.canvas.ctx.fillRect(rect.x + borderWidth, rect.y + borderWidth, blockSize - borderWidth * 2, blockSize - borderWidth * 2);
-      }        
+      }
     }
   }
 
@@ -133,7 +133,7 @@ class App extends React.Component {
     this.drawElements();
   }
 
-  render() {    
+  render() {
     return (
       <div>
         <canvas ref="canvas" width={this.canvas.width} height={this.canvas.height} style={{ backgroundColor: "red" }}></canvas>

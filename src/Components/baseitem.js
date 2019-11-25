@@ -5,7 +5,8 @@ class BaseItem {
         this._y = 0;
         this._matrix = [];
         this._pivot = { x: 1, y: 1 };
-        this._blocks = [];     
+        this._rotateClock = true;
+        this._blocks = [];
     }
 
     _generateBlocks() {
@@ -20,11 +21,11 @@ class BaseItem {
             }
         }
     }
-    
+
     _getBlockPos(coorType, valueType) {
         const { x, y } = this._blocks[0];
         const obj = { xmin: x, xmax: x, ymin: y, ymax: y};
-        this._blocks.forEach(item => { 
+        this._blocks.forEach(item => {
             if (item.x > obj.xmax) obj.xmax = item.x;
             if (item.x < obj.xmin) obj.xmin = item.x;
             if (item.y > obj.ymax) obj.ymax = item.y;
@@ -71,7 +72,7 @@ class BaseItem {
     }
 
     get blockSize() {
-        return this._blockSize; 
+        return this._blockSize;
     }
 
     get blocksCount() {
@@ -99,7 +100,7 @@ class BaseItem {
     }
 
     moveDown(canvasHeight, elements) {
-        if (this.y + this.height + this._blockSize > canvasHeight) {            
+        if (this.y + this.height + this._blockSize > canvasHeight) {
             return false;
         }
 
@@ -122,7 +123,7 @@ class BaseItem {
         }
 
         if (this.x - this._blockSize >= canvasStartWidth) {
-            this._blocks.forEach(block => block.x -= this._blockSize);  
+            this._blocks.forEach(block => block.x -= this._blockSize);
         }
 
         this._x -= this._blockSize;
@@ -151,7 +152,10 @@ class BaseItem {
     }
 
     multiplyVector(vector) {
-        return { x: vector.y, y: -vector.x };
+        if (this._rotateClock) {
+            return { x: vector.y, y: -vector.x };
+        }
+        return { x: -vector.y, y: vector.x };
     }
 
     rotate() {
@@ -171,6 +175,7 @@ class BaseItem {
             let rotatedPoint = this.multiplyVector(vector);
             rotatedPoint.x += _pivot.x;
             rotatedPoint.y += _pivot.y;
+            console.log(rotatedPoint);
             this._matrix[rotatedPoint.x][rotatedPoint.y] = 1;
         }
         this._generateBlocks();

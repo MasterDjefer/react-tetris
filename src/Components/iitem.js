@@ -7,26 +7,13 @@ class LItem extends BaseItem {
                         [1,1,1,1],
                         [0,0,0,0],
                         [0,0,0,0]];
-        this._pivot = { x: 1, y: 1 };
         this._generateBlocks();
     }
 
-    // rotate() {
-    //     if (this.state) {
-    //         this._matrix = [[0,0,0,0],
-    //         [1,1,1,1],
-    //                         [0,0,0,0],
-    //                         [0,0,0,0]];
-    //     } else {                    
-    //         this._matrix = [[0,1,0,0],
-    //                         [0,1,0,0],
-    //                         [0,1,0,0],
-    //                         [0,1,0,0]];
-    //     }
-
-    //     this.state = !this.state;
-    //     this._generateBlocks();
-    // }
+    rotate() {
+        super.rotate();
+        this._rotateClock = !this._rotateClock;
+    }
 }
 
 export default LItem;
