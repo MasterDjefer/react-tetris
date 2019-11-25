@@ -151,7 +151,7 @@ class BaseItem {
         }
     }
 
-    multiplyVector(vector) {
+    rotatePoint(vector) {
         if (this._rotateClock) {
             return { x: vector.y, y: -vector.x };
         }
@@ -159,6 +159,8 @@ class BaseItem {
     }
 
     rotate() {
+        //save state
+
         const { _pivot } = this;
         const points = [];
         for (let i = 0; i < this._matrix.length; ++i) {
@@ -171,14 +173,16 @@ class BaseItem {
         this.clearMatrix();
 
         for (const point of points) {
-            const vector = { x: point.x - this._pivot.x, y: point.y - this._pivot.y };
-            let rotatedPoint = this.multiplyVector(vector);
+            let rotatedPoint = this.rotatePoint({ x: point.x - this._pivot.x, y: point.y - this._pivot.y });
             rotatedPoint.x += _pivot.x;
             rotatedPoint.y += _pivot.y;
-            console.log(rotatedPoint);
             this._matrix[rotatedPoint.x][rotatedPoint.y] = 1;
         }
         this._generateBlocks();
+
+        //check with another items
+        //check with sides
+        //return/save state
     }
 }
 

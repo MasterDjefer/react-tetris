@@ -8,6 +8,19 @@ import TItem from './Components/titem';
 import SItem from './Components/sitem';
 import ZItem from './Components/zitem';
 
+class Menu extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div className="menu">
+        <div className="button-play" onClick={this.props.onPlayClicked}>Press me</div>
+      </div>
+    );
+  }
+}
 
 class App extends React.Component {
   constructor(props) {
@@ -15,6 +28,7 @@ class App extends React.Component {
 
     this.handleKeyPressed = this.handleKeyPressed.bind(this);
     this.drawElements = this.drawElements.bind(this);
+    this.handlePlayClicked = this.handlePlayClicked.bind(this);
 
     this.items = [OItem, LItem, JItem, TItem, SItem, ZItem];
 
@@ -25,13 +39,14 @@ class App extends React.Component {
 
     this.state = {
       elements: [],
-      currentActiveItem: null
+      currentActiveItem: null,
+      isPlayOn: false
     };
   }
 
   getRandomItem() {
     // this.items[Math.floor(Math.random() * 1000) % this.items.length]
-    return new IItem(this.canvas.width);
+    return new this.items[Math.floor(Math.random() * 1000) % this.items.length](this.canvas.width);
   }
 
   moveDownItem() {
@@ -133,10 +148,34 @@ class App extends React.Component {
     this.drawElements();
   }
 
+  startGame() {
+    const currentActiveItem = this.getRandomItem();
+    this.setState({ currentActiveItem });
+
+    const timerId = setInterval(() => {
+      if (!this.moveDownItem()) {
+        this.startGame();
+        clearInterval(timerId);
+      }
+    }, 800);
+  }
+
+  handlePlayClicked() {
+    this.setState({ isPlayOn: true });
+
+    this.startGame();
+  }
+
   render() {
     return (
-      <div>
-        <canvas ref="canvas" width={this.canvas.width} height={this.canvas.height} style={{ backgroundColor: "red" }}></canvas>
+      <div className="container">
+        <div className="canvas-container">
+          <canvas ref="canvas" width={this.canvas.width} height={this.canvas.height}></canvas>
+        </div>
+
+        {
+          !this.state.isPlayOn ? <Menu onPlayClicked={this.handlePlayClicked}/> : ""
+        }
       </div>
     );
   }
